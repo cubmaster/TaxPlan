@@ -1,0 +1,42 @@
+[ {
+  "WorkflowName": "F1120_2",
+  "Rules": [
+    {
+      "RuleName": "Result",
+      "SuccessEvent": "1120 line 2",
+      "ErrorMessage": "Error on 1120 line 2",
+      "ErrorType": "Error",
+      "RuleExpressionType": "LambdaExpression",
+      "Expression": "true",
+      "Actions": {
+        "OnSuccess": {
+          "Name": "OutputExpression",
+          "Context": {
+            "Expression": "1000"
+          }
+        }
+      }
+    }
+  ]
+  },
+  {
+  "WorkflowName": "Income",
+  "Rules": [
+    {
+      "RuleName": "total_income",
+      "SuccessEvent": "1120 line 11",
+      "ErrorMessage": "Error on 1120 line 11",
+      "ErrorType": "Error",
+      "RuleExpressionType": "LambdaExpression",
+      "Expression": "true",
+      "Actions": {
+        "OnSuccess": {
+          "Name": "OutputExpression",
+          "Context": {
+            "Expression": "data.F1120_1a - data.F1120_1b + int(F1120_2.Result)"
+          }
+        }
+      }
+    }
+  ]
+}]
