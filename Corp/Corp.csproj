@@ -6,14 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Jace" Version="1.0.0" />
       <PackageReference Include="RulesEngine" Version="3.5.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Scenarios\F1120_2021.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Scenarios\Transcript.json">
+      <None Update="Scenarios\custom.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
