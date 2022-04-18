@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks.Dataflow;
 using Jace;
 using Microsoft.Extensions.Primitives;
@@ -15,7 +16,7 @@ namespace Corp
 {
     class Program
     {
-
+        private static string[] standardFunctions = {"max","min"};
         private static JObject o2;
         static void Main(string[] args)
         {
@@ -44,29 +45,35 @@ namespace Corp
 
         static string ParseCalc(string calc)
         {
+            CalculationEngine engine = new CalculationEngine();
             var subjectCalc  = calc;
-            var terms = calc.Split(new char[] { '+', '-', '/', '*' });
+ 
+            var terms = calc.Split(new char[] { '+', '-', '/', '*' ,'(',')',','});
+            
+            //Token Replace
             for (var i = 0; i < terms.Length; i++)
             {
-                
-                var node = o2.SelectToken(terms[i]);
-                if (node != null)
+                if (!standardFunctions.ToList().Contains(terms[i]))
                 {
-                    var result = ParseCalc(node.Value<string>());
-                    subjectCalc=subjectCalc.Replace(terms[i], result);
+                    var node = o2.SelectToken(terms[i]);
+                    //if the term is a node in the json,  replace with the resolved value
+                    if (node != null)
+                    {
+                        var result = ParseCalc(node.Value<string>());
+                        subjectCalc = subjectCalc.Replace(terms[i], result);
+                    }
+                    else  //if not then just return back whats already been resolved
+                    {
+                        return subjectCalc;
+                    }
                 }
-                else
-                {
-                    return subjectCalc;
-                }
-            
             }
-            CalculationEngine engine = new CalculationEngine();
+            //once all the token replacement is done for this level of the recursion,  calculate and then return the result
             try
             {
                 
                 double calcResult = engine.Calculate(subjectCalc);
-                var stringResult =calcResult.ToString("#");
+                var stringResult = calcResult.ToString("0");
                 Console.WriteLine($"{calc} -> {subjectCalc} = {stringResult}");
                 return stringResult;
             }
